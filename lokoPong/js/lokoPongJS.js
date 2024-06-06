@@ -15,6 +15,8 @@ let player2 ={
     py:260,
     tamanho:30,
     largura:200,
+    dir:0,
+  
 }
 
 
@@ -24,6 +26,7 @@ let player2 ={
     tamanho:30, //largura da bolinha no eixo x
     largura:30, //altura da bolinha no eixo y
     dir:8,
+    diry:2,
   }
 
   
@@ -36,11 +39,11 @@ let score2 = quadro.fillText(`score2: ${pts2}` ,850,50)
 
 
 document.addEventListener('keydown', function(e){
-  if(e.keyCode === 38){
+  if(e.keyCode === 87){
   player1.dir = -8
 
   }
- else if(e.keyCode === 40){
+ else if(e.keyCode === 83){
   player1.dir = 8
  }
 
@@ -50,11 +53,11 @@ document.addEventListener('keydown', function(e){
 
 
 document.addEventListener('keyup', function(e){
-  if(e.keyCode === 38){
+  if(e.keyCode === 87){
   player1.dir = 0
 
   }
- else if(e.keyCode === 40){
+ else if(e.keyCode === 83){
   player1.dir = 0
  }
 
@@ -75,25 +78,77 @@ function moverPlayer1(){
 }
 
 
+document.addEventListener('keydown', function(e){
+  if(e.keyCode === 38){
+  player2.dir = -8
+
+  }
+ else if(e.keyCode ===40){
+  player2.dir = 8
+ }
+
+
+
+})
+
+
+document.addEventListener('keyup', function(e){
+  if(e.keyCode === 38){
+  player2.dir = 0
+
+  }
+ else if(e.keyCode === 40){
+  player2.dir = 0
+ }
+
+
+
+})
+
+
+
+function moverPlayer2(){
+  if(player2.py <0){
+    player2.py = 0 
+  }
+  else if(player2.py >520){
+    player2.py = 520
+  }
+  player2.py += player2.dir
+}
 
 
 
 function moverBolinha(){
  bolinha.px += bolinha.dir
+ bolinha.py += bolinha.diry
 
- if(bolinha.px > 1168){
+}
+
+function colisaoBolinha(){
+  if(bolinha.py + bolinha.largura >= player2.py && bolinha.py <= player2.py +player2.largura && bolinha.px >= player2.px - player2.tamanho){
     bolinha.dir *= -1
  }
 
  else if(bolinha.py + bolinha.largura >= player1.py && bolinha.py <= player1.py +player1.largura && bolinha.px <= player1.px + player1.tamanho){
     bolinha.dir *= -1
-
-
  }
-
 }
 
-
+function pontos(){
+  if(bolinha.px < -100){
+    bolinha.px = 625
+    bolinha.py = 345
+    bolinha.dir *= -1
+    pts2 += 1 
+  }
+  else if(bolinha.px > 1380){
+    bolinha.px = 625
+    bolinha.py = 345
+    bolinha.dir *= -1
+    pts1 += 1 
+  }
+}
 
 function draw(){
     quadro.fillRect(player1.px,player1.py,player1.tamanho,player1.largura)
@@ -108,7 +163,11 @@ function main(){
 quadro.clearRect(0,0,1280,720) // limpar todo o meu objeto canvas
     draw() // redesenhar
     moverBolinha()
+    colisaoBolinha()
+    pontos()
     moverPlayer1()
+    moverPlayer2()
 }
 
 setInterval(main, 10)
+
